@@ -1,0 +1,142 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+     xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    
+    >
+
+    <TextView
+        android:id="@+id/TitleLocation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Location" 
+        android:gravity="center"
+        android:textSize="22dip"
+        android:textStyle="bold"
+        android:paddingTop="8dip"
+        android:paddingBottom="8dip"
+        android:textColor="#ffffff"
+        android:background="#33b5e5"
+        />
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Unknown Location"
+        android:textSize="18dip"
+        android:paddingTop="12dip"
+        android:paddingBottom="6dip"
+        android:layout_marginLeft="10dip"
+        
+        />
+    
+     <ImageView
+        android:id="@+id/shareLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/sharebutton" 
+                
+        />
+    
+    </RelativeLayout>
+    
+    <TextView
+        android:id="@+id/TitleDecimalCoord"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Decimal Coordinate" 
+        android:gravity="center"
+        android:textSize="22dip"
+        android:textStyle="bold"
+        android:paddingTop="8dip"
+        android:paddingBottom="8dip"
+        android:textColor="#ffffff"
+        android:background="#33b5e5"
+        />
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tvDecimalCoord"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Unknown Coordinate"
+        android:textSize="16dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="14dip"
+        android:layout_marginLeft="10dip"
+        
+        />
+
+    <ImageView
+        android:id="@+id/shareDecimal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/sharebutton" 
+                
+        />
+
+    </RelativeLayout>
+
+     <TextView
+        android:id="@+id/TitleDegreeCoord"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Degree Coordinate" 
+        android:gravity="center"
+        android:textSize="22dip"
+        android:textStyle="bold"
+        android:paddingTop="8dip"
+        android:paddingBottom="8dip"
+        android:textColor="#ffffff"
+        android:background="#33b5e5"
+        />
+     <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+         
+         >
+      <TextView
+        android:id="@+id/tvDegreeCoord"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Unknown Coordinate"
+        android:textSize="16dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="14dip"
+        android:layout_marginLeft="10dip"
+        
+        />
+          <ImageView
+        android:id="@+id/shareDegree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/sharebutton" 
+               
+        />
+       
+ 
+          
+     </RelativeLayout>
+     <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:id="@+id/mainLayout"
+         >
+
+   <com.google.ads.AdView
+       android:id="@+id/adView"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentBottom="true"
+       android:layout_centerHorizontal="true"
+       ads:adSize="BANNER"
+       ads:adUnitId="a1502d044a3018b"
+       ads:loadAdOnCreate="true"
+       android:gravity="center_horizontal" />
+
+     </RelativeLayout>
+</LinearLayout>
