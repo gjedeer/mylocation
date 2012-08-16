@@ -1,0 +1,4 @@
+<h3>My Location</h3>
+Version 1.0<br>
+Copyright 2012 Mohammad Hafiz Ismail<br>&lt;mypapit@gmail.com&gt;<br>
+<b>code.google.com/p/mylocation</b><br>

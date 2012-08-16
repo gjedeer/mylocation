@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        android:orderInCategory="300" 
+        android:icon="@android:drawable/ic_menu_manage"
+        />
+
+     <item android:id="@+id/menu_viewmap"
+        android:title="@string/menu_viewmap"
+        android:orderInCategory="200"
+        android:icon="@android:drawable/ic_menu_mylocation"
+         />
+     
+     <item android:id="@+id/menu_converter"
+        android:title="@string/menu_converter"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_agenda"
+         />
+     <item android:id="@+id/menu_about"
+        android:title="@string/menu_about"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_info_details"
+         />
+     
+      
+    
+</menu>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ListPreference android:title="Update Frequency" android:summary="Location update frequency (in minutes)" 
+        
+        android:entryValues="@array/freq" android:entries="@array/freq_string"
+        android:key="updateFreq"
+        
+        />
+    
+
+</PreferenceScreen>
