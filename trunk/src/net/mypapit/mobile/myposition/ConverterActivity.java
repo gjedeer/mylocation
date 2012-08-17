@@ -37,8 +37,24 @@ public class ConverterActivity extends Activity  {
         tvSecondLon = (EditText) findViewById(R.id.secondlon);
         String coordinates = (String) getIntent().getSerializableExtra("Coordinate");
         StringTokenizer token = new StringTokenizer(coordinates, ",");
-        tvDecimalLat.setText(token.nextToken());
+        
+        String tlat,tlon;
+        
+        tlat = token.nextToken();
+        tlon = token.nextToken();
+        
+        new DecimalFormat("#.#####").format(Double.parseDouble(tlon));
+        
+        
+        
+          tvDecimalLat.setText( new DecimalFormat("#.#####").format(Double.parseDouble(tlat)));
+         
+        	tvDecimalLon.setText(new DecimalFormat("#.#####").format(Double.parseDouble(tlon)));
+        /*
+        tvDecimalLat.setText( token.nextToken());
         tvDecimalLon.setText(token.nextToken());
+        */
+        
         
         this.toDegree();
         
