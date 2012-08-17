@@ -1,12 +1,41 @@
 package net.mypapit.mobile.myposition;
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 2 as
+ *  published by the Free Software Foundation
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * MyLocation 1.1c for Android <mypapit@gmail.com> (9w2wtf)
+ * Copyright 2012 Mohammad Hafiz bin Ismail. All rights reserved.
+ *
+ * Info url :
+ * http://code.google.com/p/mylocation/
+ * http://kirostudio.com
+ * http://blog.mypapit.net/
+ * 
+ * 
+ * MyLocationActivity.java
+ * Main Activity Class for MyLocation
+ * My GPS Location Tool
+ */
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.app.Dialog;
+
 import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -22,10 +51,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class MyLocationActivity extends Activity {
+public class MyLocationActivity extends Activity implements OnClickListener {
 	
 	LocationListener myLocationListener;
 	 String bestProvider;
@@ -40,6 +75,20 @@ public class MyLocationActivity extends Activity {
 		tvDecimalCoord = (TextView) findViewById(R.id.tvDecimalCoord);
 		tvDegreeCoord = (TextView) findViewById(R.id.tvDegreeCoord);
 		tvLocation = (TextView) findViewById(R.id.tvLocation);
+		
+		ImageView shareLocation = (ImageView) findViewById(R.id.shareLocation);
+		ImageView shareDecimal= (ImageView) findViewById(R.id.shareDecimal);
+		ImageView shareDegree= (ImageView) findViewById(R.id.shareDegree);
+		
+		shareLocation.setClickable(true);
+		shareDecimal.setClickable(true);
+		shareDegree.setClickable(true);
+		
+		shareLocation.setOnClickListener(this);
+		shareDecimal.setOnClickListener(this);
+		shareDegree.setOnClickListener(this);
+		
+		
 		
 		
 		
@@ -69,7 +118,7 @@ public class MyLocationActivity extends Activity {
 				AboutDialog dialog = new AboutDialog(this);
 				//dialog.setContentView(R.layout.activity_about_dialog);
 				try {
-					dialog.setTitle("About My GPS Location" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName );
+					dialog.setTitle("About My GPS Location " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName );
 				} catch (NameNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -155,6 +204,9 @@ public class MyLocationActivity extends Activity {
 					sb.append(","+new DecimalFormat("#.#####").format(lon));
 						
 					
+				} else {
+					
+					sb = new StringBuffer("Unknown Address");
 				}
 				
 				
@@ -309,6 +361,39 @@ public class MyLocationActivity extends Activity {
 		  }
 		  
 	  }
+
+
+	@Override
+	public void onClick(View view) {
+		// TODO Auto-generated method stub
+		Intent intent;
+		intent = new Intent(Intent.ACTION_SEND);
+		intent.putExtra(Intent.EXTRA_TITLE, "My Location");
+		intent.setType("text/plain");
+		switch (view.getId()){
+			case R.id.shareLocation:
+				intent.putExtra(Intent.EXTRA_TEXT, "My current location :\n " + tvLocation.getText());
+			break;
+			
+			case R.id.shareDecimal:
+				intent.putExtra(Intent.EXTRA_TEXT, "My current position: " + tvDecimalCoord.getText());
+			break;
+			
+			case R.id.shareDegree:
+				intent.putExtra(Intent.EXTRA_TEXT, "My current position: \n" + tvDegreeCoord.getText());
+			break;
+		
+		
+		}
+		
+		startActivity(Intent.createChooser(intent, "Share via"));
+		
+		
+	}
+
+
+	
+	
 	
 }
 
