@@ -46,7 +46,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -100,7 +102,7 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		
 		GPSThread thread = new GPSThread(this);
 		
-		thread.run();
+		thread.start();
 		
 		
 	}
@@ -184,10 +186,11 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		    	criteria.setHorizontalAccuracy(Criteria.ACCURACY_LOW);
 		    	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		    	String strTime = pref.getString("updateFreq", "3");
+		    	Looper.prepare();
 		    	
 		    	int time = Integer.parseInt(strTime)*1000;
 		    	Log.d("net.mypapit.mobile.myposition","preference retrieved " + time + "ms");
-		    	int distance = 10;
+		    	int distance = 50;
 		    	
 		    	
 		    	bestProvider = locationManager.getBestProvider(criteria, false);
@@ -218,7 +221,10 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 						// TODO Auto-generated method stub
 						tvDecimalCoord.setText(sb.toString());
 						tvDegreeCoord.setText(toDegree(lat,lon));
-						tvLocation.setText(geocode(lat,lon));
+						//tvLocation.setText(geocode(lat,lon));
+						GeocodeTask task = new GeocodeTask();
+						task.execute(new LatLong(lat,lon));
+						
 						
 						
 
@@ -247,7 +253,10 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 								// TODO Auto-generated method stub
 								tvDecimalCoord.setText(sb.toString());
 								tvDegreeCoord.setText(toDegree(lat,lon));
-								tvLocation.setText(geocode(lat,lon));
+								
+								//tvLocation.setText(geocode(lat,lon));
+								GeocodeTask task = new GeocodeTask();
+								task.execute(new LatLong(lat,lon));
 								
 								
 							}
@@ -285,8 +294,12 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 				locationManager.requestLocationUpdates(bestProvider, time, distance,
 		                 myLocationListener);
 				 
+			  Looper.loop();
 			  
 		  }
+		  
+		  
+		  
 		  
 		  public String toDegree(double lat, double lon)
 		  {
@@ -312,8 +325,69 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 			  
 		  }
 		  
+		  protected class GeocodeTask extends AsyncTask<LatLong,Void,String> {
+
+			@SuppressWarnings("finally")
+			@Override
+			protected String doInBackground(LatLong... params) {
+				// TODO Auto-generated method stub
+				Geocoder gc = new Geocoder(getApplicationContext(), Locale.getDefault());
+				List<Address> addresslist=null;
+				StringBuffer returnString= new StringBuffer();
+				
+				try {
+					
+					addresslist = gc.getFromLocation(lat,lon, 3);
+					Log.d("net.mypapit","lat - " + lat);
+					Log.d("net.mypapit","lon - " + lon);
+					//returnString = new StringBuffer();
+					if (addresslist == null){
+						return "Unknown Address";
+						
+					}
+					else {
+						if (addresslist.size()>0) {
+							Address add = addresslist.get(0);
+						for (int i=0;i<add.getMaxAddressLineIndex();i++){
+							returnString.append(add.getAddressLine(i)).append("\n");	
+						}
+						
+						
+						returnString.append(add.getLocality()).append("\n");
+						//tvLocation.setText(sb.toString());
+						
+						
+						}
+					}
+				} catch (IOException e){
+					Log.d("net.mypapit.mobile","geocoder exception " + e.toString());
+					returnString = new StringBuffer("Unknown Address");
+					
+				} finally {
+					if ( returnString.toString().length() < 5) {
+						return "Unknown Address";
+					}
+					
+					return returnString.toString();
+					
+				}
+				
+			  
+				
+			}
+			  
+			protected void onPostExecute(String result){
+				tvLocation.setText(result);
+				
+				
+			}
+			  
+		  }//end GeocodeTask
+		  
+		  
 		  @SuppressWarnings("finally")
-		public String geocode(double lat, double lon){
+		public String geocode(double lat, double lon)
+		  {
 			  
 			  
 			  Geocoder gc = new Geocoder(getApplicationContext(), Locale.getDefault());
@@ -360,7 +434,7 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 			  
 		  }
 		  
-	  }
+	  } //sux
 
 
 	@Override
@@ -397,3 +471,25 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 	
 }
 
+class LatLong {
+	
+	double lat, lon;
+	
+	public LatLong(double lat, double lon) {
+		this.lat = lat;
+		this.lon = lon;
+				
+		
+	
+	}
+	public double getLat() {
+		return lat;
+		
+	}
+	
+	public double getLon() {
+		
+		return lon;
+	}
+	
+}
