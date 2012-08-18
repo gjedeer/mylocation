@@ -41,6 +41,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ConverterActivity extends Activity  {
 
@@ -143,22 +144,26 @@ public class ConverterActivity extends Activity  {
 
     public void toDegree(){
     	
-    	
-    	double lat = Double.parseDouble(tvDecimalLat.getText().toString());
-    	
-    	double lon = Double.parseDouble(tvDecimalLon.getText().toString());
-    	
-    	LatLonConvert convert = new LatLonConvert(lat);
-    	
-    	tvDegreeLat.setText(""+new DecimalFormat("#").format(convert.getDegree()));
-    	tvMinuteLat.setText(""+new DecimalFormat("#").format(convert.getMinute()));
-    	tvSecondLat.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
-    	
-    	convert = new LatLonConvert(lon);
-    	tvDegreeLon.setText(""+new DecimalFormat("#").format(convert.getDegree()));
-    	tvMinuteLon.setText(""+new DecimalFormat("#").format(convert.getMinute()));
-    	tvSecondLon.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
-    	
+    	try {
+    		double lat = Double.parseDouble(tvDecimalLat.getText().toString());
+
+    		double lon = Double.parseDouble(tvDecimalLon.getText().toString());
+
+    		LatLonConvert convert = new LatLonConvert(lat);
+
+    		tvDegreeLat.setText(""+new DecimalFormat("#").format(convert.getDegree()));
+    		tvMinuteLat.setText(""+new DecimalFormat("#").format(convert.getMinute()));
+    		tvSecondLat.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
+
+    		convert = new LatLonConvert(lon);
+    		tvDegreeLon.setText(""+new DecimalFormat("#").format(convert.getDegree()));
+    		tvMinuteLon.setText(""+new DecimalFormat("#").format(convert.getMinute()));
+    		tvSecondLon.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
+    	} catch (NumberFormatException nfe){
+    		Toast.makeText(getApplicationContext(), "Invalid value", Toast.LENGTH_LONG).show();
+
+
+    	}
     	
     	
     	
@@ -166,24 +171,30 @@ public class ConverterActivity extends Activity  {
     
     public void toDecimal()
     {
-    	LatLonConvert convert = new LatLonConvert(
-    			Double.parseDouble(tvDegreeLat.getText().toString()),
-    			Double.parseDouble(tvMinuteLat.getText().toString()),
-    			Double.parseDouble(tvSecondLat.getText().toString())
-    			);
     	
-    	
-    	//StringBuffer sb = new StringBuffer(); 
-    	
-    	tvDecimalLat.setText(""+new DecimalFormat("#.#####").format(convert.getDecimal()));
-    	
-    	convert = new LatLonConvert(
-    			Double.parseDouble(tvDegreeLon.getText().toString()),
-    			Double.parseDouble(tvMinuteLon.getText().toString()),
-    			Double.parseDouble(tvSecondLon.getText().toString())
-    			);
-    	tvDecimalLon.setText(""+ new DecimalFormat("#.#####").format(convert.getDecimal()));
-    	
+    	try {
+    		LatLonConvert convert = new LatLonConvert(
+    				Double.parseDouble(tvDegreeLat.getText().toString()),
+    				Double.parseDouble(tvMinuteLat.getText().toString()),
+    				Double.parseDouble(tvSecondLat.getText().toString())
+    				);
+
+
+    		//StringBuffer sb = new StringBuffer(); 
+
+    		tvDecimalLat.setText(""+new DecimalFormat("#.#####").format(convert.getDecimal()));
+
+    		convert = new LatLonConvert(
+    				Double.parseDouble(tvDegreeLon.getText().toString()),
+    				Double.parseDouble(tvMinuteLon.getText().toString()),
+    				Double.parseDouble(tvSecondLon.getText().toString())
+    				);
+    		tvDecimalLon.setText(""+ new DecimalFormat("#.#####").format(convert.getDecimal()));
+    	} catch (NumberFormatException nfe){
+    		Toast.makeText(getApplicationContext(), "Invalid value", Toast.LENGTH_LONG).show();
+
+
+    	}
     	
     	
     	

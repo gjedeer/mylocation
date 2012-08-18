@@ -34,7 +34,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginRight="10dip"
             android:ems="10"
-            android:inputType="numberDecimal">
+            android:inputType="numberDecimal|numberSigned">
             <requestFocus />
             </EditText>
 
@@ -63,7 +63,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginRight="10dip"
             android:ems="10"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal|numberSigned" />
 
         <TextView
             android:id="@+id/textView2"
@@ -137,7 +137,7 @@
             android:layout_marginRight="16dp"
             android:layout_toLeftOf="@+id/secondlat"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
            <EditText
                android:id="@+id/secondlat"

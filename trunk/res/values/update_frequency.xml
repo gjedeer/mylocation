@@ -15,8 +15,8 @@
     
    <string-array name="freq_string">
              <item>1 minute (drains battery)</item>
-        <item>2 minutes</item>
-        <item>3 minutes</item>
+        <item>2 minutes (drains battery)</item>
+        <item>3 minutes (drains battery)</item>
         <item>5 minutes</item>
         <item>6 minutes</item>
         <item>7 minutes</item>
