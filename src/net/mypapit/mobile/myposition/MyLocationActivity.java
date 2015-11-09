@@ -102,6 +102,25 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		
 		thread.start();
 	}
+
+	private static String getMessage(double lat, double lon, double uncertainity, String messageHeader) {
+		  StringBuffer message = new StringBuffer();
+
+		  message.append(messageHeader);
+		  message.append("\nhttps://openstreetmap.org/go/");
+		  message.append(MapUtils.createShortLinkString(lat, lon, 15));
+		  message.append("?m");
+		  message.append("\n\nhttps://maps.google.com/maps?q=loc:" + lat + "," + lon + "&z=15");
+		  message.append("\n\nhttp://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=15");
+		  message.append("\n\ngeo:");
+		  message.append(new DecimalFormat("#.######").format(lat));
+		  message.append(",");
+		  message.append(new DecimalFormat("#.######").format(lon));
+		  message.append(";u=");
+		  message.append(new DecimalFormat("#.#").format(uncertainity));
+
+		  return message.toString();
+	}
 	
 	  public boolean onCreateOptionsMenu(Menu menu) {
 	        getMenuInflater().inflate(R.menu.activity_my_location, menu);
@@ -182,6 +201,7 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		    	criteria.setHorizontalAccuracy(Criteria.ACCURACY_LOW);
 		    	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		    	String strTime = pref.getString("updateFreq", "3");
+				final String messageHeader = pref.getString("messageHeader", "Kliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:");
 		    	Looper.prepare();
 		    	
 		    	int time = Integer.parseInt(strTime)*1000;
@@ -198,6 +218,7 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 					sb = new StringBuffer("");
 					lat = location.getLatitude();
 					lon = location.getLongitude();
+					uncertainity = location.getAccuracy();
 					
 					sb.append(new DecimalFormat("#.#####").format(lat));
 					sb.append(","+new DecimalFormat("#.#####").format(lon));
@@ -214,9 +235,11 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
 						tvDecimalCoord.setText(sb.toString());
 						tvDegreeCoord.setText(toDegree(lat,lon));
+
+						tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader));
+
 						//tvLocation.setText(geocode(lat,lon));
 						GeocodeTask task = new GeocodeTask();
 						task.execute(new LatLong(lat,lon));
@@ -251,19 +274,7 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 								// TODO Auto-generated method stub
 								tvDecimalCoord.setText(sb.toString());
 								tvDegreeCoord.setText(toDegree(lat,lon));
-								StringBuffer message = new StringBuffer();
-								message.append("\nKliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:\nhttps://openstreetmap.org/go/");
-								message.append(MapUtils.createShortLinkString(lat, lon, 15));
-								message.append("?m");
-								message.append("\n\nhttps://maps.google.com/maps?q=" + lat + "," + lon + "&z=15");
-								message.append("\n\ngeo:");
-								message.append(new DecimalFormat("#.######").format(lat));
-								message.append(",");
-								message.append(new DecimalFormat("#.######").format(lon));
-								message.append(";u=");
-								message.append(new DecimalFormat("#.#").format(uncertainity));
-
-								tvMessage.setText(message.toString());
+								tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader));
 								
 								//tvLocation.setText(geocode(lat,lon));
 								GeocodeTask task = new GeocodeTask();
