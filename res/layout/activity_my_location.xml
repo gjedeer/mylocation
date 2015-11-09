@@ -123,20 +123,46 @@
  
           
      </RelativeLayout>
+    <TextView
+        android:id="@+id/TitleMessage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Message" 
+        android:gravity="center"
+        android:textSize="22dip"
+        android:textStyle="bold"
+        android:paddingTop="8dip"
+        android:paddingBottom="8dip"
+        android:textColor="#ffffff"
+        android:background="#33b5e5"
+        />
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Unknown Location"
+        android:textSize="18dip"
+        android:paddingTop="12dip"
+        android:paddingBottom="6dip"
+        android:layout_marginLeft="10dip"
+        
+        />
+    
+     <ImageView
+        android:id="@+id/shareMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/sharebutton" 
+                
+        />
+    
+    </RelativeLayout>
      <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
         android:id="@+id/mainLayout"
          >
-
-   <com.google.ads.AdView
-       android:id="@+id/adView"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentBottom="true"
-       android:layout_centerHorizontal="true"
-       ads:adSize="BANNER"
-       ads:adUnitId="a1502d044a3018b"
-       ads:loadAdOnCreate="true"
-       android:gravity="center_horizontal" />
 
      </RelativeLayout>
 </LinearLayout>

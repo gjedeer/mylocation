@@ -78,18 +78,6 @@
 
     </RelativeLayout>
 
-      <com.google.ads.AdView
-          android:id="@+id/adViewConvert"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-           android:layout_gravity="center_vertical|center_horizontal"
-          ads:adSize="BANNER"
-          ads:adUnitId="a1502d044a3018b"
-          ads:loadAdOnCreate="true"
-          android:gravity="center_horizontal"
-          android:paddingBottom="6dip"
-          android:paddingTop="6dip" />
-        
     <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

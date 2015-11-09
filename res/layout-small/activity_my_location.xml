@@ -122,13 +122,5 @@ xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
       <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
         android:id="@+id/mainLayout"
          >
-   <com.google.ads.AdView android:id="@+id/adView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_alignParentBottom="true"
-ads:adUnitId="a1502d044a3018b"                          
-ads:adSize="BANNER"
-ads:loadAdOnCreate="true"/>    
-
      </RelativeLayout>
 </LinearLayout>

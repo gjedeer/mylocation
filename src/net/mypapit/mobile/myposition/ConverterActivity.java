@@ -29,10 +29,6 @@ package net.mypapit.mobile.myposition;
 import java.text.DecimalFormat;
 import java.util.StringTokenizer;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.Editable;
@@ -85,13 +81,6 @@ public class ConverterActivity extends Activity  {
         
         this.toDegree();
         
-  	  AdView adView = new AdView(this,AdSize.BANNER, "a1502d044a3018b");
-		
-  		//RelativeLayout layout= (RelativeLayout) findViewById(R.id.mainLayout);
-  		//layout.addView(adView);
-  		adView.loadAd(new AdRequest());
-
-                
         
        /*
         *  

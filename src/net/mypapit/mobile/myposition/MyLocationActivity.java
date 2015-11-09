@@ -67,9 +67,9 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 	LocationListener myLocationListener;
 	 String bestProvider;
 	 Location location;
-	 TextView tvDecimalCoord,tvDegreeCoord,tvLocation;
+	 TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage;
 	 ImageView shareLocation,shareDecimal,shareDegree;
-	 double lat, lon;
+	 double lat, lon, uncertainity;
 	 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,24 +77,22 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		tvDecimalCoord = (TextView) findViewById(R.id.tvDecimalCoord);
 		tvDegreeCoord = (TextView) findViewById(R.id.tvDegreeCoord);
 		tvLocation = (TextView) findViewById(R.id.tvLocation);
+		tvMessage = (TextView) findViewById(R.id.tvMessage);
 		
 		ImageView shareLocation = (ImageView) findViewById(R.id.shareLocation);
 		ImageView shareDecimal= (ImageView) findViewById(R.id.shareDecimal);
 		ImageView shareDegree= (ImageView) findViewById(R.id.shareDegree);
+		ImageView shareMessage= (ImageView) findViewById(R.id.shareMessage);
 		
 		shareLocation.setClickable(true);
 		shareDecimal.setClickable(true);
 		shareDegree.setClickable(true);
+		shareMessage.setClickable(true);
 		
 		shareLocation.setOnClickListener(this);
 		shareDecimal.setOnClickListener(this);
 		shareDegree.setOnClickListener(this);
-		
-		
-		
-		
-		
-		
+		shareMessage.setOnClickListener(this);
 	}
 	
 	public void onResume() {
@@ -103,8 +101,6 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		GPSThread thread = new GPSThread(this);
 		
 		thread.start();
-		
-		
 	}
 	
 	  public boolean onCreateOptionsMenu(Menu menu) {
@@ -242,10 +238,12 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 						
 						lat = location.getLatitude();
 						lon = location.getLongitude();
+						uncertainity = location.getAccuracy();
 						sb = new StringBuffer();
 						
 						sb.append(new DecimalFormat("#.#####").format(lat));
 						sb.append(","+new DecimalFormat("#.#####").format(lon));
+						Log.d("net.mypapit.mobile.myposition","Got location: " + sb.toString());
 						activity.runOnUiThread(new Runnable(){
 
 							@Override
@@ -253,6 +251,19 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 								// TODO Auto-generated method stub
 								tvDecimalCoord.setText(sb.toString());
 								tvDegreeCoord.setText(toDegree(lat,lon));
+								StringBuffer message = new StringBuffer();
+								message.append("\nKliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:\nhttps://openstreetmap.org/go/");
+								message.append(MapUtils.createShortLinkString(lat, lon, 15));
+								message.append("?m");
+								message.append("\n\nhttps://maps.google.com/maps?q=" + lat + "," + lon + "&z=15");
+								message.append("\n\ngeo:");
+								message.append(new DecimalFormat("#.######").format(lat));
+								message.append(",");
+								message.append(new DecimalFormat("#.######").format(lon));
+								message.append(";u=");
+								message.append(new DecimalFormat("#.#").format(uncertainity));
+
+								tvMessage.setText(message.toString());
 								
 								//tvLocation.setText(geocode(lat,lon));
 								GeocodeTask task = new GeocodeTask();
@@ -291,7 +302,10 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 					
 				};
 
-				locationManager.requestLocationUpdates(bestProvider, time, distance,
+//				locationManager.requestLocationUpdates(bestProvider, time, distance,
+//		                 myLocationListener);
+
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance,
 		                 myLocationListener);
 				 
 			  Looper.loop();
@@ -457,6 +471,9 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 				intent.putExtra(Intent.EXTRA_TEXT, "My current position: \n" + tvDegreeCoord.getText());
 			break;
 		
+			case R.id.shareMessage:
+				intent.putExtra(Intent.EXTRA_TEXT, tvMessage.getText());
+			break;
 		
 		}
 		
