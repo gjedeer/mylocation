@@ -43,37 +43,38 @@ import android.widget.TextView;
 
 public class AboutDialog extends Dialog{
 	private static Context mContext = null;
-	
+
 	public AboutDialog(Context context) {
 		super(context);
 		mContext = context;
-		
-	}		
-		/**
 
-		 * Standard Android on create method that gets called when the activity initialized.
-		 */
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			setContentView(R.layout.activity_about_dialog);
-			TextView tv = (TextView)findViewById(R.id.legal_text);
-			tv.setText(readRawTextFile(R.raw.legal));
-			tv = (TextView)findViewById(R.id.info_text);
-			tv.setText(Html.fromHtml(readRawTextFile(R.raw.info)));
-			tv.setLinkTextColor(Color.WHITE);
-			Linkify.addLinks(tv, Linkify.ALL);
-		}
-		public static String readRawTextFile(int id) {
-			InputStream inputStream = mContext.getResources().openRawResource(id);
-			InputStreamReader in = new InputStreamReader(inputStream);
-			BufferedReader buf = new BufferedReader(in);
-			String line;
-			StringBuilder text = new StringBuilder();
-			try {
-				while (( line = buf.readLine()) != null) text.append(line);
-			} catch (IOException e) {
-				return null;
-			}
-			return text.toString();
-		}
+	}		
+	/**
+
+	 * Standard Android on create method that gets called when the activity initialized.
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setContentView(R.layout.activity_about_dialog);
+		TextView tv = (TextView)findViewById(R.id.legal_text);
+		tv.setText(readRawTextFile(R.raw.legal));
+		tv = (TextView)findViewById(R.id.info_text);
+		tv.setText(Html.fromHtml(readRawTextFile(R.raw.info)));
+		tv.setLinkTextColor(Color.WHITE);
+		Linkify.addLinks(tv, Linkify.ALL);
 	}
+
+	public static String readRawTextFile(int id) {
+		InputStream inputStream = mContext.getResources().openRawResource(id);
+		InputStreamReader in = new InputStreamReader(inputStream);
+		BufferedReader buf = new BufferedReader(in);
+		String line;
+		StringBuilder text = new StringBuilder();
+		try {
+			while (( line = buf.readLine()) != null) text.append(line);
+		} catch (IOException e) {
+			return null;
+		}
+		return text.toString();
+	}
+}

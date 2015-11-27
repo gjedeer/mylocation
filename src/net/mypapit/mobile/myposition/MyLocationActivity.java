@@ -63,14 +63,15 @@ import android.widget.TextView;
 
 
 public class MyLocationActivity extends Activity implements OnClickListener {
-	
+
 	LocationListener myLocationListener;
-	 String bestProvider;
-	 Location location;
-	 TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage;
-	 ImageView shareLocation,shareDecimal,shareDegree;
-	 double lat, lon, uncertainity;
-	 
+	String bestProvider;
+	Location location;
+	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage;
+	ImageView shareLocation,shareDecimal,shareDegree;
+	double lat, lon, uncertainity;
+	boolean nonEmpty = false;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_location);
@@ -78,393 +79,325 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		tvDegreeCoord = (TextView) findViewById(R.id.tvDegreeCoord);
 		tvLocation = (TextView) findViewById(R.id.tvLocation);
 		tvMessage = (TextView) findViewById(R.id.tvMessage);
-		
+
 		ImageView shareLocation = (ImageView) findViewById(R.id.shareLocation);
 		ImageView shareDecimal= (ImageView) findViewById(R.id.shareDecimal);
 		ImageView shareDegree= (ImageView) findViewById(R.id.shareDegree);
 		ImageView shareMessage= (ImageView) findViewById(R.id.shareMessage);
-		
+
 		shareLocation.setClickable(true);
 		shareDecimal.setClickable(true);
 		shareDegree.setClickable(true);
 		shareMessage.setClickable(true);
-		
+
 		shareLocation.setOnClickListener(this);
 		shareDecimal.setOnClickListener(this);
 		shareDegree.setOnClickListener(this);
 		shareMessage.setOnClickListener(this);
 	}
-	
+
 	public void onResume() {
 		super.onResume();
-		
+
 		GPSThread thread = new GPSThread(this);
-		
+
+		Log.d("net.mypapit.mobile.myposition","Starting GPSThread");
 		thread.start();
+		Log.d("net.mypapit.mobile.myposition","Started GPSThread");
 	}
 
-	private static String getMessage(double lat, double lon, double uncertainity, String messageHeader) {
-		  StringBuffer message = new StringBuffer();
+	private static String getMessage(double lat, double lon, double uncertainity, String messageHeader, boolean nonEmpty) {
+		StringBuffer message = new StringBuffer();
 
-		  message.append(messageHeader);
-		  message.append("\nhttps://openstreetmap.org/go/");
-		  message.append(MapUtils.createShortLinkString(lat, lon, 15));
-		  message.append("?m");
-		  message.append("\n\nhttps://maps.google.com/maps?q=loc:" + lat + "," + lon + "&z=15");
-		  message.append("\n\nhttp://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=15");
-		  message.append("\n\ngeo:");
-		  message.append(new DecimalFormat("#.######").format(lat));
-		  message.append(",");
-		  message.append(new DecimalFormat("#.######").format(lon));
-		  message.append(";u=");
-		  message.append(new DecimalFormat("#.#").format(uncertainity));
+		if(!nonEmpty) {
+			return "(position not known yet)";
+		}
 
-		  return message.toString();
+		message.append(messageHeader);
+		message.append("\nhttps://openstreetmap.org/go/");
+		message.append(MapUtils.createShortLinkString(lat, lon, 15));
+		message.append("?m");
+		message.append("\n\nhttps://maps.google.com/maps?q=loc:" + lat + "," + lon + "&z=15");
+		message.append("\n\nhttp://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=15");
+		message.append("\n\ngeo:");
+		message.append(new DecimalFormat("#.######").format(lat));
+		message.append(",");
+		message.append(new DecimalFormat("#.######").format(lon));
+		message.append(";u=");
+		message.append(new DecimalFormat("#.#").format(uncertainity));
+
+		return message.toString();
 	}
-	
-	  public boolean onCreateOptionsMenu(Menu menu) {
-	        getMenuInflater().inflate(R.menu.activity_my_location, menu);
-	        return true;
-	    }
-	
-	    public boolean onOptionsItemSelected(MenuItem item){
-	    	Intent intent;
-	    	switch(item.getItemId()) {
-			
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_my_location, menu);
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item){
+		Intent intent;
+		switch(item.getItemId()) {
+
 			case R.id.menu_about:
 				AboutDialog dialog = new AboutDialog(this);
-				//dialog.setContentView(R.layout.activity_about_dialog);
 				try {
 					dialog.setTitle("About My GPS Location " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName );
 				} catch (NameNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-					
 				}
 				dialog.setCancelable(true);
 				dialog.show();
-				
+
 				return true;
 			case R.id.menu_settings:
 				intent = new Intent(getBaseContext(),SettingsActivity.class);
 				startActivity(intent);
 				return true;
-				
+
 			case R.id.menu_viewmap:
-				 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+lat+","+lon+"?z=15"));
-				 startActivity(intent);
-				 return true;
-				 
+				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+lat+","+lon+"?z=15"));
+				startActivity(intent);
+				return true;
+
 			case R.id.menu_converter:
 				intent = new Intent();
 				intent.setClass(getBaseContext(), ConverterActivity.class);
 				intent.putExtra("Coordinate", lat+","+lon);
 				startActivityForResult(intent,-1);
-				
-				
+
 				return true;
-				
-			
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+
+	class GPSThread extends Thread {
+		Activity activity;
+		StringBuffer sb;
+
+		public GPSThread(Activity activity){
+			this.activity = activity;
+		}
+
+		public void run() {
+			Log.d("net.mypapit.mobile.myposition","GPSThread::run entered");
+			LocationManager locationManager;
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+			criteria.setPowerRequirement(Criteria.POWER_LOW);
+			criteria.setAltitudeRequired(false);
+			criteria.setBearingRequired(false);
+			criteria.setSpeedRequired(false);
+			criteria.setCostAllowed(false);
+			criteria.setHorizontalAccuracy(Criteria.ACCURACY_LOW);
+			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			String strTime = pref.getString("updateFreq", "3");
+			final String messageHeader = pref.getString("messageHeader", "Kliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:");
+			Looper.prepare();
+
+			int time = Integer.parseInt(strTime)*1000;
+			Log.d("net.mypapit.mobile.myposition","preference retrieved " + time + "ms");
+			int distance = 50;
+
+//			bestProvider = locationManager.getBestProvider(criteria, false);
+			location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			lat = 0.0;
+			lon = 0.0;
+			nonEmpty = false;
+
+			if (location!=null){
+				sb = new StringBuffer("");
+				lat = location.getLatitude();
+				lon = location.getLongitude();
+				uncertainity = location.getAccuracy();
+
+				sb.append(new DecimalFormat("#.#####").format(lat));
+				sb.append(","+new DecimalFormat("#.#####").format(lon));
+			} else {
+				sb = new StringBuffer("Unknown Address");
 			}
-	    	
-	    	
-	    	
-			return super.onOptionsItemSelected(item);
-	    	
-	    	
-	    }
-	  
-	  
-	  class GPSThread extends Thread {
-		  Activity activity;
-		  StringBuffer sb;
-		  
-		  
-		  public GPSThread(Activity activity){
-			  this.activity = activity;
-			  
-			  
-			  
-		  }
-		  
-		  public void run() {
-			  
-			  	LocationManager locationManager;
-		    	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-				Criteria criteria = new Criteria();
-		    	criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-		    	criteria.setPowerRequirement(Criteria.POWER_LOW);
-		    	criteria.setAltitudeRequired(false);
-		    	criteria.setBearingRequired(false);
-		    	criteria.setSpeedRequired(false);
-		    	criteria.setCostAllowed(false);
-		    	criteria.setHorizontalAccuracy(Criteria.ACCURACY_LOW);
-		    	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		    	String strTime = pref.getString("updateFreq", "3");
-				final String messageHeader = pref.getString("messageHeader", "Kliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:");
-		    	Looper.prepare();
-		    	
-		    	int time = Integer.parseInt(strTime)*1000;
-		    	Log.d("net.mypapit.mobile.myposition","preference retrieved " + time + "ms");
-		    	int distance = 50;
-		    	
-		    	
-		    	bestProvider = locationManager.getBestProvider(criteria, false);
-				location = locationManager.getLastKnownLocation(bestProvider);
-				lat = 0.0;
-				lon = 0.0;
-				
-				if (location!=null){
-					sb = new StringBuffer("");
+
+			activity.runOnUiThread(new Runnable(){
+				@Override
+				public void run() {
+					tvDecimalCoord.setText(sb.toString());
+					tvDegreeCoord.setText(toDegree(lat,lon));
+
+					tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader, nonEmpty));
+
+					GeocodeTask task = new GeocodeTask();
+					task.execute(new LatLong(lat,lon));
+				}
+			});
+
+			myLocationListener = new LocationListener(){
+				@Override
+				public void onLocationChanged(Location location) {
 					lat = location.getLatitude();
 					lon = location.getLongitude();
+					nonEmpty = true;
 					uncertainity = location.getAccuracy();
-					
+					sb = new StringBuffer();
+
 					sb.append(new DecimalFormat("#.#####").format(lat));
 					sb.append(","+new DecimalFormat("#.#####").format(lon));
-						
-					
-				} else {
-					
-					sb = new StringBuffer("Unknown Address");
+					Log.d("net.mypapit.mobile.myposition","Got location: " + sb.toString());
+					activity.runOnUiThread(new Runnable(){
+
+						@Override
+						public void run() {
+							tvDecimalCoord.setText(sb.toString());
+							tvDegreeCoord.setText(toDegree(lat,lon));
+							tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader, true));
+
+							GeocodeTask task = new GeocodeTask();
+							task.execute(new LatLong(lat,lon));
+						}
+					});
 				}
-				
-				
-				
-				activity.runOnUiThread(new Runnable(){
 
-					@Override
-					public void run() {
-						tvDecimalCoord.setText(sb.toString());
-						tvDegreeCoord.setText(toDegree(lat,lon));
+				@Override
+				public void onProviderDisabled(String provider) {
+					Log.d("net.mypapit.mobile.myposition","GPS provider disabled: " + provider);
+				}
 
-						tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader));
+				@Override
+				public void onProviderEnabled(String provider) {
+					Log.d("net.mypapit.mobile.myposition","GPS provider enabled: " + provider);
+				}
 
-						//tvLocation.setText(geocode(lat,lon));
-						GeocodeTask task = new GeocodeTask();
-						task.execute(new LatLong(lat,lon));
-						
-						
-						
+				@Override
+				public void onStatusChanged(String provider, int status,
+						Bundle extras) {
+					Log.d("net.mypapit.mobile.myposition","GPS status changed: " + provider + "," + status.toString());
+				}
+			};
 
-						
-					}
-					
-				});
-				
-				
-				myLocationListener = new LocationListener(){
+			//				locationManager.requestLocationUpdates(bestProvider, time, distance,
+			//		                 myLocationListener);
 
-					@Override
-					public void onLocationChanged(Location location) {
-						// TODO Auto-generated method stub
-						
-						lat = location.getLatitude();
-						lon = location.getLongitude();
-						uncertainity = location.getAccuracy();
-						sb = new StringBuffer();
-						
-						sb.append(new DecimalFormat("#.#####").format(lat));
-						sb.append(","+new DecimalFormat("#.#####").format(lon));
-						Log.d("net.mypapit.mobile.myposition","Got location: " + sb.toString());
-						activity.runOnUiThread(new Runnable(){
+//			List<String> allProviders = locationManager.getAllProviders();
 
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								tvDecimalCoord.setText(sb.toString());
-								tvDegreeCoord.setText(toDegree(lat,lon));
-								tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader));
-								
-								//tvLocation.setText(geocode(lat,lon));
-								GeocodeTask task = new GeocodeTask();
-								task.execute(new LatLong(lat,lon));
-								
-								
-							}
-							
-						});
+//			locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, time, distance,
+//					myLocationListener);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+					myLocationListener);
+			Log.d("net.mypapit.mobile.myposition","GPS location requested from thread");
+//			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance,
+//					myLocationListener);
 
-						
-						
-						
-						
-					}
+			Looper.loop();
+		} // LocationListener
 
-					@Override
-					public void onProviderDisabled(String provider) {
-						// TODO Auto-generated method stub
-						
-					}
+		public String toDegree(double lat, double lon)
+		{
+			StringBuffer stringb = new StringBuffer();
 
-					@Override
-					public void onProviderEnabled(String provider) {
-						// TODO Auto-generated method stub
-						
-					}
+			LatLonConvert convert =new LatLonConvert(lat);
 
-					@Override
-					public void onStatusChanged(String provider, int status,
-							Bundle extras) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					
-				};
+			stringb.append(new DecimalFormat("#").format(convert.getDegree())+"\u00b0 ");
+			stringb.append(new DecimalFormat("#").format(convert.getMinute())+"\' ");
+			stringb.append(new DecimalFormat("#.###").format(convert.getSecond()) +"\" , ");
 
-//				locationManager.requestLocationUpdates(bestProvider, time, distance,
-//		                 myLocationListener);
+			convert =new LatLonConvert(lon);
 
-				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance,
-		                 myLocationListener);
-				 
-			  Looper.loop();
-			  
-		  }
-		  
-		  
-		  
-		  
-		  public String toDegree(double lat, double lon)
-		  {
-			  StringBuffer stringb = new StringBuffer();
-			  
-			  LatLonConvert convert =new LatLonConvert(lat);
-			
-			  stringb.append(new DecimalFormat("#").format(convert.getDegree())+"\u00b0 ");
-			  stringb.append(new DecimalFormat("#").format(convert.getMinute())+"\' ");
-			  stringb.append(new DecimalFormat("#.###").format(convert.getSecond()) +"\" , ");
-			
-			  convert =new LatLonConvert(lon);
-				
-			  stringb.append(new DecimalFormat("#").format(convert.getDegree())+"\u00b0 ");
-			  stringb.append(new DecimalFormat("#").format(convert.getMinute())+"\' ");
-			  stringb.append(new DecimalFormat("#.###").format(convert.getSecond()) +"\"");
-			  
-			  
-			  
-			  return stringb.toString();
-			  
-			  
-			  
-		  }
-		  
-		  protected class GeocodeTask extends AsyncTask<LatLong,Void,String> {
+			stringb.append(new DecimalFormat("#").format(convert.getDegree())+"\u00b0 ");
+			stringb.append(new DecimalFormat("#").format(convert.getMinute())+"\' ");
+			stringb.append(new DecimalFormat("#.###").format(convert.getSecond()) +"\"");
 
+			return stringb.toString();
+		}
+
+		protected class GeocodeTask extends AsyncTask<LatLong,Void,String> {
 			@SuppressWarnings("finally")
 			@Override
 			protected String doInBackground(LatLong... params) {
-				// TODO Auto-generated method stub
 				Geocoder gc = new Geocoder(getApplicationContext(), Locale.getDefault());
 				List<Address> addresslist=null;
 				StringBuffer returnString= new StringBuffer();
-				
+
 				try {
-					
 					addresslist = gc.getFromLocation(lat,lon, 3);
 					Log.d("net.mypapit","lat - " + lat);
 					Log.d("net.mypapit","lon - " + lon);
-					//returnString = new StringBuffer();
+
 					if (addresslist == null){
 						return "Unknown Address";
-						
 					}
 					else {
 						if (addresslist.size()>0) {
 							Address add = addresslist.get(0);
-						for (int i=0;i<add.getMaxAddressLineIndex();i++){
-							returnString.append(add.getAddressLine(i)).append("\n");	
-						}
-						
-						
-						returnString.append(add.getLocality()).append("\n");
-						//tvLocation.setText(sb.toString());
-						
-						
+							for (int i=0;i<add.getMaxAddressLineIndex();i++){
+								returnString.append(add.getAddressLine(i)).append("\n");	
+							}
+
+							returnString.append(add.getLocality()).append("\n");
 						}
 					}
 				} catch (IOException e){
 					Log.d("net.mypapit.mobile","geocoder exception " + e.toString());
 					returnString = new StringBuffer("Unknown Address");
-					
 				} finally {
 					if ( returnString.toString().length() < 5) {
 						return "Unknown Address";
 					}
-					
+
 					return returnString.toString();
-					
 				}
-				
-			  
-				
 			}
-			  
+
 			protected void onPostExecute(String result){
 				tvLocation.setText(result);
-				
-				
 			}
-			  
-		  }//end GeocodeTask
-		  
-		  
-		  @SuppressWarnings("finally")
+		}//end GeocodeTask
+
+
+		@SuppressWarnings("finally")
 		public String geocode(double lat, double lon)
-		  {
-			  
-			  
-			  Geocoder gc = new Geocoder(getApplicationContext(), Locale.getDefault());
-				List<Address> addresslist=null;
-				StringBuffer returnString= new StringBuffer();
-				
-				try {
-					
-					addresslist = gc.getFromLocation(lat,lon, 3);
-					Log.d("net.mypapit","lat - " + lat);
-					Log.d("net.mypapit","lon - " + lon);
-					//returnString = new StringBuffer();
-					if (addresslist == null){
-						return "Unknown Address";
-						
-					}
-					else {
-						if (addresslist.size()>0) {
-							Address add = addresslist.get(0);
+		{
+			Geocoder gc = new Geocoder(getApplicationContext(), Locale.getDefault());
+			List<Address> addresslist=null;
+			StringBuffer returnString= new StringBuffer();
+
+			try {
+				addresslist = gc.getFromLocation(lat,lon, 3);
+				Log.d("net.mypapit","lat - " + lat);
+				Log.d("net.mypapit","lon - " + lon);
+
+				if (addresslist == null){
+					return "Unknown Address";
+				}
+				else {
+					if (addresslist.size()>0) {
+						Address add = addresslist.get(0);
 						for (int i=0;i<add.getMaxAddressLineIndex();i++){
 							returnString.append(add.getAddressLine(i)).append("\n");	
 						}
-						
-						
+
 						returnString.append(add.getLocality()).append("\n");
-						//tvLocation.setText(sb.toString());
-						
-						
-						}
 					}
-				} catch (IOException e){
-					Log.d("net.mypapit.mobile","geocoder exception " + e.toString());
-					returnString = new StringBuffer("Unknown Address");
-					
-				} finally {
-					if ( returnString.toString().length() < 5) {
-						return "Unknown Address";
-					}
-					
-					return returnString.toString();
-					
 				}
-				
-			  
-		  }
-		  
-	  } //sux
+			} catch (IOException e){
+				Log.d("net.mypapit.mobile","geocoder exception " + e.toString());
+				returnString = new StringBuffer("Unknown Address");
+			} finally {
+				if ( returnString.toString().length() < 5) {
+					return "Unknown Address";
+				}
+
+				return returnString.toString();
+			}
+		}
+	} //sux
 
 
+	/*
+	 * Share button clicked next to one of the text boxes
+	 */
 	@Override
 	public void onClick(View view) {
-		// TODO Auto-generated method stub
 		Intent intent;
 		intent = new Intent(Intent.ACTION_SEND);
 		intent.putExtra(Intent.EXTRA_TITLE, "My Location");
@@ -472,52 +405,39 @@ public class MyLocationActivity extends Activity implements OnClickListener {
 		switch (view.getId()){
 			case R.id.shareLocation:
 				intent.putExtra(Intent.EXTRA_TEXT, "My current location :\n " + tvLocation.getText());
-			break;
-			
+				break;
+
 			case R.id.shareDecimal:
 				intent.putExtra(Intent.EXTRA_TEXT, "My current position: " + tvDecimalCoord.getText());
-			break;
-			
+				break;
+
 			case R.id.shareDegree:
 				intent.putExtra(Intent.EXTRA_TEXT, "My current position: \n" + tvDegreeCoord.getText());
-			break;
-		
+				break;
+
 			case R.id.shareMessage:
 				intent.putExtra(Intent.EXTRA_TEXT, tvMessage.getText());
-			break;
-		
+				break;
 		}
-		
+
 		startActivity(Intent.createChooser(intent, "Share via"));
-		
-		
 	}
-
-
-	
-	
-	
 }
 
 class LatLong {
-	
+
 	double lat, lon;
-	
+
 	public LatLong(double lat, double lon) {
 		this.lat = lat;
 		this.lon = lon;
-				
-		
-	
 	}
 	public double getLat() {
 		return lat;
-		
 	}
-	
+
 	public double getLon() {
-		
 		return lon;
 	}
-	
+
 }

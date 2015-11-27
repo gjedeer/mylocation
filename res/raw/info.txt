@@ -1,4 +1,5 @@
-<h3>My Location</h3>
-Version 1.0<br>
-Copyright 2012 Mohammad Hafiz Ismail<br>&lt;mypapit@gmail.com&gt;<br>
-<b>code.google.com/p/mylocation</b><br>
+<h3>My Position</h3>
+Version 1.2.1<br>
+Copyright 2012-2015 Mohammad Hafiz Ismail<br>&lt;mypapit@gmail.com&gt;<br>
+With later changes by GDR! and others<br>
+<b>https://github.com/gjedeer/mylocation/</b><br>
