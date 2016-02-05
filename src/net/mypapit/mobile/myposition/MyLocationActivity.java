@@ -124,11 +124,11 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		message.append("\n\nhttps://maps.google.com/maps?q=loc:" + lat + "," + lon + "&z=15");
 		message.append("\n\nhttp://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=15");
 		message.append("\n\ngeo:");
-		message.append(new DecimalFormat("#.######").format(lat));
+		message.append(Float.toString((float)lat));
 		message.append(",");
-		message.append(new DecimalFormat("#.######").format(lon));
+		message.append(Float.toString((float)lon));
 		message.append(";u=");
-		message.append(new DecimalFormat("#.#").format(uncertainity));
+		message.append(Float.toString((float)uncertainity));
 
 		return message.toString();
 	}
@@ -203,8 +203,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			lon = location.getLongitude();
 			uncertainity = location.getAccuracy();
 
-			sb.append(new DecimalFormat("#.#####").format(lat));
-			sb.append(","+new DecimalFormat("#.#####").format(lon));
+			sb.append(Float.toString((float)lat)).append(",").append(Float.toString((float)lon));
 		} else {
 			sb = new StringBuffer("Unknown Address");
 		}
@@ -244,8 +243,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			gpsFixReceived = true;
 		}
 
-		sb.append(new DecimalFormat("#.#####").format(lat));
-		sb.append(","+new DecimalFormat("#.#####").format(lon));
+		sb.append(Float.toString((float)lat)).append(",").append(Float.toString((float)lon));
 		Log.d("net.mypapit.mobile.myposition","Got location: " + sb.toString());
 		runOnUiThread(new Runnable(){
 
