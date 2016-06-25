@@ -53,8 +53,10 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,7 +77,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage, tvUpdatedTime;
 	ImageView shareLocation,shareDecimal,shareDegree;
 	double lat, lon, uncertainity;
-	Date fix; // fix time
+	long fix; // fix time
 	boolean nonEmpty = false;
 	boolean gpsFixReceived = false;
 	StringBuffer sb;
@@ -118,6 +120,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		super.onResume();
 
 		this.registerLocationListener();
+		this.registerRelativeFixTime();
 	}
 
 	private static String getMessage(double lat, double lon, double uncertainity, String messageHeader, boolean nonEmpty) {
@@ -185,6 +188,19 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void registerRelativeFixTime() {
+		final Handler handler = new Handler();
+		final String time_header = this.getString(R.string.last_fix_time);
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
+				tvUpdatedTime.setText(time_header + relative_date);
+				handler.postDelayed(this, 3000);
+			}
+		}, 3000);
+	}
+
 	public void registerLocationListener() {
 		LocationManager locationManager;
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -211,6 +227,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			sb = new StringBuffer("");
 			lat = location.getLatitude();
 			lon = location.getLongitude();
+			fix = location.getTime();
 			uncertainity = location.getAccuracy();
 
 			sb.append(Float.toString((float)lat)).append(",").append(Float.toString((float)lon));
@@ -218,11 +235,16 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			sb = new StringBuffer("Unknown Address");
 		}
 
+		final String time_header = this.getString(R.string.last_fix_time);
+
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
 				tvDecimalCoord.setText(sb.toString());
 				tvDegreeCoord.setText(toDegree(lat,lon));
+
+				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
+				tvUpdatedTime.setText(time_header + relative_date);
 
 				tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader, nonEmpty));
 
@@ -241,7 +263,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	public void onLocationChanged(Location location) {
 		lat = location.getLatitude();
 		lon = location.getLongitude();
-		fix = new Date(location.getTime());
+		fix = location.getTime();
 		nonEmpty = true;
 		uncertainity = location.getAccuracy();
 		sb = new StringBuffer();
@@ -261,9 +283,10 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 
 			@Override
 			public void run() {
+				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
 				tvDecimalCoord.setText(sb.toString());
 				tvDegreeCoord.setText(toDegree(lat,lon));
-				tvUpdatedTime.setText(time_header + df.format(fix));
+				tvUpdatedTime.setText(time_header + relative_date);
 				tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader, true));
 
 				GeocodeTask task = new GeocodeTask();
