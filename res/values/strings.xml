@@ -13,5 +13,6 @@
     <string name="menu_toDegree">Convert To Degree</string>
     <string name="menu_toDecimal">Convert To Decimal</string>
     <string name="menu_converter">Converter</string>
+    <string name="last_fix_time">Last fix: </string>
 
 </resources>

@@ -28,9 +28,14 @@ package net.mypapit.mobile.myposition;
  */
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import android.app.Activity;
 
@@ -67,20 +72,25 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	LocationListener myLocationListener;
 	String bestProvider;
 	Location location;
-	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage;
+	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage, tvUpdatedTime;
 	ImageView shareLocation,shareDecimal,shareDegree;
 	double lat, lon, uncertainity;
+	Date fix; // fix time
 	boolean nonEmpty = false;
 	boolean gpsFixReceived = false;
 	StringBuffer sb;
 	String messageHeader = "";
 	String strTime = "0";
+	private DateFormat df;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
+		df.setTimeZone(TimeZone.getDefault());
 		setContentView(R.layout.activity_my_location);
 		tvDecimalCoord = (TextView) findViewById(R.id.tvDecimalCoord);
 		tvDegreeCoord = (TextView) findViewById(R.id.tvDegreeCoord);
+		tvUpdatedTime = (TextView) findViewById(R.id.tvUpdatedTime);
 		tvLocation = (TextView) findViewById(R.id.tvLocation);
 		tvMessage = (TextView) findViewById(R.id.tvMessage);
 
@@ -231,9 +241,11 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	public void onLocationChanged(Location location) {
 		lat = location.getLatitude();
 		lon = location.getLongitude();
+		fix = new Date(location.getTime());
 		nonEmpty = true;
 		uncertainity = location.getAccuracy();
 		sb = new StringBuffer();
+		String time_header = this.getString(R.string.last_fix_time);
 
 		/* Don't display coarse location once GPS location is known */
 		if(location.getProvider() != LocationManager.GPS_PROVIDER && gpsFixReceived) {
@@ -251,6 +263,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			public void run() {
 				tvDecimalCoord.setText(sb.toString());
 				tvDegreeCoord.setText(toDegree(lat,lon));
+				tvUpdatedTime.setText(time_header + df.format(fix));
 				tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader, true));
 
 				GeocodeTask task = new GeocodeTask();

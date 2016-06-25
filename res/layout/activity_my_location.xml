@@ -58,7 +58,7 @@
         android:textSize="22dip"
         android:textStyle="bold"
         android:paddingTop="8dip"
-        android:paddingBottom="8dip"
+        android:paddingBottom="2dip"
         android:textColor="#ffffff"
         android:background="#33b5e5"
         />
