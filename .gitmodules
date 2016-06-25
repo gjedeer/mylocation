@@ -1,0 +1,3 @@
+[submodule "libs/android-ago"]
+	path = libs/android-ago
+	url = https://github.com/curioustechizen/android-ago.git

@@ -245,7 +245,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		nonEmpty = true;
 		uncertainity = location.getAccuracy();
 		sb = new StringBuffer();
-		String time_header = this.getString(R.string.last_fix_time);
+		final String time_header = this.getString(R.string.last_fix_time);
 
 		/* Don't display coarse location once GPS location is known */
 		if(location.getProvider() != LocationManager.GPS_PROVIDER && gpsFixReceived) {
