@@ -256,7 +256,9 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, time, distance, this);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance, this);
 		Log.d("net.mypapit.mobile.myposition","GPS location requested from thread");
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance, this);
+		if(locationManager.getAllProviders().contains("network")) {
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance, this);
+		}
 
 	} // LocationListener
 	@Override
