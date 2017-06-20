@@ -1,5 +1,0 @@
-<h3>My Position</h3>
-Version 1.2.1<br>
-Copyright 2012-2015 Mohammad Hafiz Ismail<br>&lt;mypapit@gmail.com&gt;<br>
-With later changes by GDR! and others<br>
-<b>https://github.com/gjedeer/mylocation/</b><br>
