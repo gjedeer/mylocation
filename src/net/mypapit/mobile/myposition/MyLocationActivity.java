@@ -298,6 +298,15 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	}
 
 	@Override
+	protected void onPause() {
+		super.onPause();
+
+		LocationManager locationManager;
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationManager.removeUpdates(this);
+	}
+
+	@Override
 	public void onProviderDisabled(String provider) {
 		Log.d("net.mypapit.mobile.myposition","GPS provider disabled: " + provider);
 	}
