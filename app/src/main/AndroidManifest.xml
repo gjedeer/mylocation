@@ -25,10 +25,6 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".AboutDialog"
-            android:label="@string/title_activity_about_dialog" >
-        </activity>
-        <activity
             android:name=".ConverterActivity"
             android:label="@string/title_activity_converter" >
                   

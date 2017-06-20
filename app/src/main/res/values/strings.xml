@@ -14,5 +14,19 @@
     <string name="menu_toDecimal">Convert To Decimal</string>
     <string name="menu_converter">Converter</string>
     <string name="last_fix_time">Last fix: </string>
+	<string name="about_legal">
+This program is distributed in the hope 
+that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+	</string>
+	<string name="about_info">
+&lt;h3&gt;My Position&lt;/h3&gt;
+Version 1.2.1&lt;br&gt;
+Copyright 2012-2015 Mohammad Hafiz Ismail&lt;br&gt;&amp;lt;mypapit@gmail.com&amp;gt;&lt;br&gt;
+With later changes by GDR! and others&lt;br&gt;
+&lt;b&gt;https://github.com/gjedeer/mylocation/&lt;/b&gt;&lt;br&gt;
+	</string>
 
 </resources>

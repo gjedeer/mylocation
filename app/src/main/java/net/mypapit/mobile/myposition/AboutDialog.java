@@ -57,9 +57,9 @@ public class AboutDialog extends Dialog{
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_about_dialog);
 		TextView tv = (TextView)findViewById(R.id.legal_text);
-		tv.setText(readRawTextFile(R.raw.legal));
+		tv.setText(mContext.getString(R.string.about_legal));
 		tv = (TextView)findViewById(R.id.info_text);
-		tv.setText(Html.fromHtml(readRawTextFile(R.raw.info)));
+		tv.setText(Html.fromHtml(mContext.getString(R.string.about_info)));
 		tv.setLinkTextColor(Color.WHITE);
 		Linkify.addLinks(tv, Linkify.ALL);
 	}
