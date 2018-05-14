@@ -3,6 +3,7 @@
     <string name="app_name">My Position</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_get_fix">Get Fix</string>
     <string name="title_activity_my_location">My Location</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="menu_viewmap">View Map</string>

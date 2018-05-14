@@ -1,4 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+     <item android:id="@+id/menu_get_fix"
+        android:title="@string/menu_get_fix"
+        android:orderInCategory="400"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:showAsAction="always"
+         />
+
     <item android:id="@+id/menu_settings"
         android:title="@string/menu_settings"
         android:orderInCategory="300" 
@@ -9,7 +16,6 @@
         android:title="@string/menu_viewmap"
         android:orderInCategory="200"
         android:icon="@android:drawable/ic_menu_mapmode"
-        android:showAsAction="always"
          />
      
      <item android:id="@+id/menu_converter"

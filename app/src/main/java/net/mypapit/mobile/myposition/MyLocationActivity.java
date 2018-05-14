@@ -69,7 +69,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 public class MyLocationActivity extends Activity implements OnClickListener, LocationListener {
 
 	LocationListener myLocationListener;
@@ -167,6 +166,19 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 				}
 				dialog.setCancelable(true);
 				dialog.show();
+
+				return true;
+			case R.id.menu_get_fix:
+				Intent service = new Intent(MyLocationActivity.this, GetFixService.class);
+				if (!GetFixService.IS_SERVICE_RUNNING) {
+					service.setAction(GetFixService.START_FOREGROUND_ACTION);
+					GetFixService.IS_SERVICE_RUNNING = true;
+				} else {
+					service.setAction(GetFixService.STOP_FOREGROUND_ACTION);
+					GetFixService.IS_SERVICE_RUNNING = false;
+
+				}
+				startService(service);
 
 				return true;
 			case R.id.menu_settings:
