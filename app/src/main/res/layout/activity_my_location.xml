@@ -22,7 +22,7 @@
         android:paddingTop="8dip"
         android:paddingBottom="8dip"
         android:textColor="#ffffff"
-        android:background="#33b5e5"
+        android:background="#373740"
         />
     <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
     <TextView
@@ -60,7 +60,7 @@
         android:paddingTop="8dip"
         android:paddingBottom="2dip"
         android:textColor="#ffffff"
-        android:background="#33b5e5"
+        android:background="#373740"
         />
     <TextView
         android:id="@+id/tvUpdatedTime"
@@ -72,7 +72,7 @@
         android:paddingTop="2dip"
         android:paddingBottom="2dip"
         android:textColor="#ffffff"
-        android:background="#33b5e5"
+        android:background="#373740"
         />
     <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
     <TextView
@@ -110,7 +110,7 @@
         android:paddingTop="8dip"
         android:paddingBottom="8dip"
         android:textColor="#ffffff"
-        android:background="#33b5e5"
+        android:background="#373740"
         />
      <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
          
@@ -150,7 +150,7 @@
         android:paddingTop="8dip"
         android:paddingBottom="8dip"
         android:textColor="#ffffff"
-        android:background="#33b5e5"
+        android:background="#373740"
         />
     <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
     <TextView
