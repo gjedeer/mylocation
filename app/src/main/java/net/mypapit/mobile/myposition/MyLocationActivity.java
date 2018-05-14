@@ -38,6 +38,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.app.ActionBar;
 
 import android.content.Context;
 
@@ -90,6 +91,8 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
 		df.setTimeZone(TimeZone.getDefault());
 		setContentView(R.layout.activity_my_location);
+		ActionBar ab = getActionBar();
+		ab.setTitle("My Location");
 		tvDecimalCoord = (TextView) findViewById(R.id.tvDecimalCoord);
 		tvDegreeCoord = (TextView) findViewById(R.id.tvDegreeCoord);
 		tvUpdatedTime = (TextView) findViewById(R.id.tvUpdatedTime);
@@ -148,7 +151,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_my_location, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item){

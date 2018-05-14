@@ -8,7 +8,8 @@
      <item android:id="@+id/menu_viewmap"
         android:title="@string/menu_viewmap"
         android:orderInCategory="200"
-        android:icon="@android:drawable/ic_menu_mylocation"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        android:showAsAction="always"
          />
      
      <item android:id="@+id/menu_converter"
