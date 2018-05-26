@@ -44,6 +44,7 @@ import android.content.Context;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Address;
 import android.location.Criteria;
@@ -63,6 +64,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+
+import android.Manifest;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.app.ActivityCompat;
 
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -84,6 +90,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	String messageHeader = "";
 	String strTime = "0";
 	private DateFormat df;
+	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 0x29b;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -121,8 +128,62 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	public void onResume() {
 		super.onResume();
 
-		this.registerLocationListener();
+		this.checkLocationPermission();
 		this.registerRelativeFixTime();
+	}
+
+	public boolean checkLocationPermission() {
+		if (ContextCompat.checkSelfPermission(this,
+					Manifest.permission.ACCESS_FINE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED) {
+
+			// Should we show an explanation?
+			if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+						Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+				ActivityCompat.requestPermissions(MyLocationActivity.this,
+						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+						MY_PERMISSIONS_REQUEST_LOCATION);
+			} else {
+				// No explanation needed, we can request the permission.
+				ActivityCompat.requestPermissions(this,
+						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+						MY_PERMISSIONS_REQUEST_LOCATION);
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+			String permissions[], int[] grantResults) {
+		/* Empty method - TODO: handle denial with a message */
+		switch (requestCode) {
+        case MY_PERMISSIONS_REQUEST_LOCATION: {
+				// If request is cancelled, the result arrays are empty.
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+					// permission was granted, yay! Do the
+					// location-related task you need to do.
+					if (ContextCompat.checkSelfPermission(this,
+							Manifest.permission.ACCESS_FINE_LOCATION)
+							== PackageManager.PERMISSION_GRANTED) {
+
+						//Request location updates:
+						this.registerLocationListener();
+					}
+
+				} else {
+					
+						/* TODO: handle denial gracefully */
+
+				}
+				return;
+			}
+		}
 	}
 
 	private static String getMessage(double lat, double lon, double uncertainity, String messageHeader, boolean nonEmpty) {
