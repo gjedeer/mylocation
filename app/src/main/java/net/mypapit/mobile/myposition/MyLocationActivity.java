@@ -141,11 +141,13 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			if (ActivityCompat.shouldShowRequestPermissionRationale(this,
 						Manifest.permission.ACCESS_FINE_LOCATION)) {
 
+				Log.d("net.mypapit.mobile.myposition","Location permission requested (explanation).");
 				ActivityCompat.requestPermissions(MyLocationActivity.this,
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 						MY_PERMISSIONS_REQUEST_LOCATION);
 			} else {
 				// No explanation needed, we can request the permission.
+				Log.d("net.mypapit.mobile.myposition","Location permission requested (no explanation).");
 				ActivityCompat.requestPermissions(this,
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 						MY_PERMISSIONS_REQUEST_LOCATION);
@@ -173,12 +175,16 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 							Manifest.permission.ACCESS_FINE_LOCATION)
 							== PackageManager.PERMISSION_GRANTED) {
 
+						Log.d("net.mypapit.mobile.myposition","Location permission request granted.");
 						//Request location updates:
 						this.registerLocationListener();
+					} else {
+						Log.d("net.mypapit.mobile.myposition","Location permission request denied [1].");
+						/* TODO: handle denial gracefully */
 					}
 
 				} else {
-					Log.d("net.mypapit.mobile.myposition","Location permission request denied.");
+					Log.d("net.mypapit.mobile.myposition","Location permission request denied [2].");
 					/* TODO: handle denial gracefully */
 
 				}
