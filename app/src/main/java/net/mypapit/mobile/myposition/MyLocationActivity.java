@@ -152,6 +152,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			}
 			return false;
 		} else {
+			this.registerLocationListener();
 			return true;
 		}
 	}
@@ -161,7 +162,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			String permissions[], int[] grantResults) {
 		/* Empty method - TODO: handle denial with a message */
 		switch (requestCode) {
-        case MY_PERMISSIONS_REQUEST_LOCATION: {
+			case MY_PERMISSIONS_REQUEST_LOCATION: {
 				// If request is cancelled, the result arrays are empty.
 				if (grantResults.length > 0
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -177,8 +178,8 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 					}
 
 				} else {
-					
-						/* TODO: handle denial gracefully */
+					Log.d("net.mypapit.mobile.myposition","Location permission request denied.");
+					/* TODO: handle denial gracefully */
 
 				}
 				return;
