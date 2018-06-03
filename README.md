@@ -3,6 +3,8 @@ Originally written by "[mypapit](https://blog.mypapit.net/)" and licensed as GPL
 
 Share your location, easily and lightly
 
+[![CircleCI](https://circleci.com/gh/gjedeer/mylocation/tree/master.svg?style=svg)](https://circleci.com/gh/gjedeer/mylocation/tree/master)
+
 ![Screenshot](https://f.gdr.name/mylocation.png)
 
 # LICENSE
