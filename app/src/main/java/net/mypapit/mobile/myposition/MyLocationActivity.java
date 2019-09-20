@@ -82,15 +82,17 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	LocationListener myLocationListener;
 	String bestProvider;
 	Location location;
-	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvMessage, tvUpdatedTime;
-	ImageView shareLocation,shareDecimal,shareDegree;
+	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvOLC,tvMessage, tvUpdatedTime;
 	double lat, lon, uncertainity;
+	OpenLocationCode OLC;
 	long fix; // fix time
 	boolean nonEmpty = false;
 	boolean gpsFixReceived = false;
 	StringBuffer sb;
 	String messageHeader = "";
 	String strTime = "0";
+	public static final int MY_DEFAULT_OLC_LENGTH = 10;
+	int OLCLength = MY_DEFAULT_OLC_LENGTH;
 	private DateFormat df;
 	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 0x29b;
 
@@ -105,26 +107,35 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		tvDegreeCoord = (TextView) findViewById(R.id.tvDegreeCoord);
 		tvUpdatedTime = (TextView) findViewById(R.id.tvUpdatedTime);
 		tvLocation = (TextView) findViewById(R.id.tvLocation);
+		tvOLC = (TextView) findViewById(R.id.tvOLC);
 		tvMessage = (TextView) findViewById(R.id.tvMessage);
 
 		ImageView shareLocation = (ImageView) findViewById(R.id.shareLocation);
 		ImageView shareDecimal= (ImageView) findViewById(R.id.shareDecimal);
 		ImageView shareDegree= (ImageView) findViewById(R.id.shareDegree);
+		ImageView shareOLC= (ImageView) findViewById(R.id.shareOLC);
 		ImageView shareMessage= (ImageView) findViewById(R.id.shareMessage);
 
 		shareLocation.setClickable(true);
 		shareDecimal.setClickable(true);
 		shareDegree.setClickable(true);
+		shareOLC.setClickable(true);
 		shareMessage.setClickable(true);
 
 		shareLocation.setOnClickListener(this);
 		shareDecimal.setOnClickListener(this);
 		shareDegree.setOnClickListener(this);
+		shareOLC.setOnClickListener(this);
 		shareMessage.setOnClickListener(this);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		messageHeader = pref.getString("messageHeader", "Kliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:");
 		strTime = pref.getString("updateFreq", "3");
+		try {
+			OLCLength = Integer.parseInt(pref.getString("OLCLength", "10"));
+		} catch (NumberFormatException e) {
+			OLCLength = MY_DEFAULT_OLC_LENGTH;
+		}
 	}
 
 	public void onResume() {
@@ -286,6 +297,14 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		}, 3000);
 	}
 
+	private OpenLocationCode getOLC(double lat, double lon) {
+		try {
+			return new OpenLocationCode(lat, lon, OLCLength);
+		} catch (IllegalArgumentException e) {
+			return new OpenLocationCode(lat, lon, MY_DEFAULT_OLC_LENGTH);
+		}
+	}
+
 	public void registerLocationListener() {
 		LocationManager locationManager;
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -312,6 +331,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			sb = new StringBuffer("");
 			lat = location.getLatitude();
 			lon = location.getLongitude();
+			OLC = getOLC(lat, lon);
 			fix = location.getTime();
 			uncertainity = location.getAccuracy();
 
@@ -327,6 +347,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			public void run() {
 				tvDecimalCoord.setText(sb.toString());
 				tvDegreeCoord.setText(toDegree(lat,lon));
+				tvOLC.setText(OLC.getCode());
 
 				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
 				tvUpdatedTime.setText(time_header + relative_date);
@@ -351,6 +372,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		lat = location.getLatitude();
 		lon = location.getLongitude();
 		fix = location.getTime();
+		OLC = getOLC(lat, lon);
 		nonEmpty = true;
 		uncertainity = location.getAccuracy();
 		sb = new StringBuffer();
@@ -373,6 +395,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
 				tvDecimalCoord.setText(sb.toString());
 				tvDegreeCoord.setText(toDegree(lat,lon));
+				tvOLC.setText(OLC.getCode());
 				tvUpdatedTime.setText(time_header + relative_date);
 				tvMessage.setText(MyLocationActivity.getMessage(lat, lon, uncertainity, messageHeader, true));
 
@@ -524,6 +547,10 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 
 			case R.id.shareDegree:
 				intent.putExtra(Intent.EXTRA_TEXT, "My current position: \n" + tvDegreeCoord.getText());
+				break;
+
+			case R.id.shareOLC:
+				intent.putExtra(Intent.EXTRA_TEXT, "My current position: \n" + tvOLC.getText());
 				break;
 
 			case R.id.shareMessage:

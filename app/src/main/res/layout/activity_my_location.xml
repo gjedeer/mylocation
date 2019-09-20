@@ -140,6 +140,45 @@
           
      </RelativeLayout>
     <TextView
+        android:id="@+id/TitleOLC"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Open Location Code"
+        android:gravity="center"
+        android:textSize="22dip"
+        android:textStyle="bold"
+        android:paddingTop="8dip"
+        android:paddingBottom="8dip"
+        android:textColor="#ffffff"
+        android:background="#373740"
+        />
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+
+        >
+        <TextView
+            android:id="@+id/tvOLC"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Unknown Coordinate"
+            android:textSize="16dip"
+            android:paddingTop="10dip"
+            android:paddingBottom="14dip"
+            android:layout_marginLeft="10dip"
+
+            />
+        <ImageView
+            android:id="@+id/shareOLC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/sharebutton"
+
+            />
+
+    </RelativeLayout>
+
+    <TextView
         android:id="@+id/TitleMessage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
