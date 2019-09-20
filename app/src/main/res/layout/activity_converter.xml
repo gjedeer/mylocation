@@ -180,5 +180,78 @@
                android:inputType="numberDecimal" />
 
     </LinearLayout>
-    
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#33b5e5"
+        android:paddingBottom="8dip"
+        android:paddingTop="8dip"
+        android:textColor="#ffffff"
+        android:textSize="16dip"
+
+        android:text="Open Location Code"
+        android:paddingLeft="10dip"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip"
+        >
+
+        <EditText
+            android:id="@+id/OLCInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dip"
+            android:ems="10">
+        </EditText>
+
+        <TextView
+            android:id="@+id/OLCDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/OLCInput"
+            android:layout_alignBottom="@+id/OLCInput"
+            android:layout_alignParentLeft="true"
+            android:text="OLC"
+            android:layout_marginLeft="5dip"
+            />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip"
+        >
+
+        <EditText
+            android:id="@+id/OLCLengthInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dip"
+            android:ems="10"
+            android:inputType="numberDecimal">
+        </EditText>
+
+        <TextView
+            android:id="@+id/OLCLengthDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/OLCLengthInput"
+            android:layout_alignBottom="@+id/OLCLengthInput"
+            android:layout_alignParentLeft="true"
+            android:text="Length"
+            android:layout_marginLeft="5dip"
+            />
+
+    </RelativeLayout>
+
 </LinearLayout>
