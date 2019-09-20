@@ -75,6 +75,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.openlocationcode.OpenLocationCode;
+
 public class MyLocationActivity extends Activity implements OnClickListener, LocationListener {
 
 	LocationListener myLocationListener;
