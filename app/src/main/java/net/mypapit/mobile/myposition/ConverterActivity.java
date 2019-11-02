@@ -39,8 +39,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.openlocationcode.OpenLocationCode;
-
 public class ConverterActivity extends Activity  {
 
     EditText tvDecimalLat, tvDecimalLon, tvDegreeLat,tvMinuteLat, tvSecondLat,tvDegreeLon,tvMinuteLon,tvSecondLon,tvOLC,tvOLCLength;
