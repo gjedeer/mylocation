@@ -9,7 +9,7 @@
         android:key="messageHeader"
         android:defaultValue="Kliknij na jeden z poniższych linków aby zobaczyć moją pozycję na mapie:"
         />
-    <EditTextPreference android:title="OLC length" android:summary="Length of generated OLCs. Default is 10."
+    <EditTextPreference android:title="OLC length" android:summary="Length of generated Open Location Codes. Default is 10."
         android:key="OLCLength"
         android:defaultValue="10"
         android:inputType="numberDecimal"
