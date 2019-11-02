@@ -11,3 +11,4 @@ Share your location, easily and lightly
 
 GPL v2 or later.
 
+Uses the Google OpenLocationCode library, Apache 2.0
