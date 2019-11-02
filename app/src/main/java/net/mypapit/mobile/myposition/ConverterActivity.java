@@ -39,9 +39,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.openlocationcode.OpenLocationCode;
+
 public class ConverterActivity extends Activity  {
 
-    EditText tvDecimalLat, tvDecimalLon, tvDegreeLat,tvMinuteLat, tvSecondLat,tvDegreeLon,tvMinuteLon,tvSecondLon;
+    EditText tvDecimalLat, tvDecimalLon, tvDegreeLat,tvMinuteLat, tvSecondLat,tvDegreeLon,tvMinuteLon,tvSecondLon,tvOLC,tvOLCLength;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,10 @@ public class ConverterActivity extends Activity  {
         tvDegreeLon = (EditText) findViewById(R.id.degreelon);
         tvMinuteLon = (EditText) findViewById(R.id.minutelon);
         tvSecondLon = (EditText) findViewById(R.id.secondlon);
+
+        tvOLC = (EditText) findViewById(R.id.OLCInput);
+        tvOLCLength = (EditText) findViewById(R.id.OLCLengthInput);
+
         String coordinates = (String) getIntent().getSerializableExtra("Coordinate");
         StringTokenizer token = new StringTokenizer(coordinates, ",");
 
@@ -69,10 +75,10 @@ public class ConverterActivity extends Activity  {
         new DecimalFormat("#.#####").format(Double.parseDouble(tlon));
 
         tvDecimalLat.setText( new DecimalFormat("#.#####").format(Double.parseDouble(tlat)));
-
         tvDecimalLon.setText(new DecimalFormat("#.#####").format(Double.parseDouble(tlon)));
+        tvOLCLength.setText("10");
 
-        this.toDegree();
+        this.fromDecimal();
     }
 
     @Override
@@ -83,58 +89,106 @@ public class ConverterActivity extends Activity  {
 
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
-            case R.id.menu_toDecimal:
-                this.toDecimal();
+            case R.id.menu_fromDegree:
+                this.fromDegree();
                 break;
 
-            case R.id.menu_toDegree:
-                this.toDegree();
+            case R.id.menu_fromDecimal:
+                this.fromDecimal();
+                break;
+
+            case R.id.menu_fromOLC:
+                this.fromOLC();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void toDegree(){
+    private void setOLC(double lat, double lon){
+        final int defaultLength = 10;
+        int length;
+        try {
+            length = Integer.parseInt(tvOLCLength.getText().toString());
+        } catch (NumberFormatException e) {
+            length = defaultLength;
+        }
+
+        OpenLocationCode OLC;
+        try {
+            OLC = new OpenLocationCode(lat, lon, length);
+        } catch (IllegalArgumentException e) {
+            OLC = new OpenLocationCode(lat, lon, defaultLength);
+        }
+        tvOLC.setText(OLC.getCode());
+    }
+
+    private void setDegree(double lat, double lon){
+        LatLonConvert convert = new LatLonConvert(lat);
+
+        tvDegreeLat.setText(""+new DecimalFormat("#").format(convert.getDegree()));
+        tvMinuteLat.setText(""+new DecimalFormat("#").format(convert.getMinute()));
+        tvSecondLat.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
+
+        convert = new LatLonConvert(lon);
+        tvDegreeLon.setText(""+new DecimalFormat("#").format(convert.getDegree()));
+        tvMinuteLon.setText(""+new DecimalFormat("#").format(convert.getMinute()));
+        tvSecondLon.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
+    }
+
+    private void setDecimal(double lat, double lon){
+        tvDecimalLat.setText(""+new DecimalFormat("#.#####").format(lat));
+        tvDecimalLon.setText(""+ new DecimalFormat("#.#####").format(lon));
+    }
+
+    public void fromDecimal(){
         try {
             double lat = Double.parseDouble(tvDecimalLat.getText().toString());
-
             double lon = Double.parseDouble(tvDecimalLon.getText().toString());
 
-            LatLonConvert convert = new LatLonConvert(lat);
-
-            tvDegreeLat.setText(""+new DecimalFormat("#").format(convert.getDegree()));
-            tvMinuteLat.setText(""+new DecimalFormat("#").format(convert.getMinute()));
-            tvSecondLat.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
-
-            convert = new LatLonConvert(lon);
-            tvDegreeLon.setText(""+new DecimalFormat("#").format(convert.getDegree()));
-            tvMinuteLon.setText(""+new DecimalFormat("#").format(convert.getMinute()));
-            tvSecondLon.setText(""+new DecimalFormat("#.##").format(convert.getSecond()));
+            setDegree(lat, lon);
+            setOLC(lat, lon);
         } catch (NumberFormatException nfe){
             Toast.makeText(getApplicationContext(), "Invalid value", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void toDecimal()
+    public void fromDegree()
     {
         try {
-            LatLonConvert convert = new LatLonConvert(
+            double lat = new LatLonConvert(
                     Double.parseDouble(tvDegreeLat.getText().toString()),
                     Double.parseDouble(tvMinuteLat.getText().toString()),
                     Double.parseDouble(tvSecondLat.getText().toString())
-                    );
+                    ).getDecimal();
 
-            tvDecimalLat.setText(""+new DecimalFormat("#.#####").format(convert.getDecimal()));
-
-            convert = new LatLonConvert(
+            double lon = new LatLonConvert(
                     Double.parseDouble(tvDegreeLon.getText().toString()),
                     Double.parseDouble(tvMinuteLon.getText().toString()),
                     Double.parseDouble(tvSecondLon.getText().toString())
-                    );
-            tvDecimalLon.setText(""+ new DecimalFormat("#.#####").format(convert.getDecimal()));
+                    ).getDecimal();
+
+            setDecimal(lat, lon);
+            setOLC(lat, lon);
         } catch (NumberFormatException nfe){
             Toast.makeText(getApplicationContext(), "Invalid value", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void fromOLC()
+    {
+        try {
+            OpenLocationCode OLC = new OpenLocationCode(tvOLC.getText().toString());
+            OpenLocationCode.CodeArea CA = OLC.decode();
+            double lat = CA.getCenterLatitude();
+            double lon = CA.getCenterLongitude();
+
+            setDecimal(lat, lon);
+            setDegree(lat, lon);
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        } catch (IllegalStateException e) {
+            Toast.makeText(getApplicationContext(), "Short codes are not supported\n"+e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

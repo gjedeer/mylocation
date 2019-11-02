@@ -11,8 +11,9 @@
     <string name="title_activity_about_dialog">About</string>
     <string name="menu_about">About</string>
     <string name="title_activity_converter">Convert GPS Coordinate</string>
-    <string name="menu_toDegree">Convert To Degree</string>
-    <string name="menu_toDecimal">Convert To Decimal</string>
+    <string name="menu_fromDecimal">Convert From Decimal</string>
+    <string name="menu_fromDegree">Convert From Degree</string>
+    <string name="menu_fromOLC">Convert From OLC</string>
     <string name="menu_converter">Converter</string>
     <string name="last_fix_time">Last fix: </string>
 	<string name="about_legal">

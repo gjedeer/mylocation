@@ -1,10 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_toDegree"
-        android:title="@string/menu_toDegree"
+    <item android:id="@+id/menu_fromDecimal"
+        android:title="@string/menu_fromDecimal"
         android:orderInCategory="100"
         android:showAsAction="never" />
-    <item android:id="@+id/menu_toDecimal"
-        android:title="@string/menu_toDecimal"
+    <item android:id="@+id/menu_fromDegree"
+        android:title="@string/menu_fromDegree"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item android:id="@+id/menu_fromOLC"
+        android:title="@string/menu_fromOLC"
         android:orderInCategory="100"
         android:showAsAction="never" />
 </menu>
