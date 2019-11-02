@@ -345,7 +345,9 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			public void run() {
 				tvDecimalCoord.setText(sb.toString());
 				tvDegreeCoord.setText(toDegree(lat,lon));
-				tvOLC.setText(OLC.getCode());
+				if(OLC != null) {
+					tvOLC.setText(OLC.getCode());
+				}
 
 				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
 				tvUpdatedTime.setText(time_header + relative_date);
