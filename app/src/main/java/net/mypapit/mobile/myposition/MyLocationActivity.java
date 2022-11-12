@@ -215,7 +215,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		message.append("\nhttps://openstreetmap.org/go/");
 		message.append(MapUtils.createShortLinkString(lat, lon, 15));
 		message.append("?m");
-		message.append("\n\nhttps://maps.google.com/maps?q=loc:" + lat + "," + lon + "&z=15");
+		message.append("\n\nhttps://maps.google.com/maps/search/?api=1&query=" + lat + "%2C" + lon);
 		message.append("\n\nhttp://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=15");
 		message.append("\n\ngeo:");
 		message.append(Float.toString((float)lat));
