@@ -58,6 +58,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.annotation.MainThread;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -80,9 +81,10 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 	LocationListener myLocationListener;
 	String bestProvider;
 	Location location;
-	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvOLC,tvMessage, tvUpdatedTime;
+	TextView tvDecimalCoord,tvDegreeCoord,tvLocation,tvOLC,tvMHL,tvMessage, tvUpdatedTime;
 	double lat, lon, uncertainity;
 	OpenLocationCode OLC;
+	MaidenheadLocator MHL;
 	long fix; // fix time
 	boolean nonEmpty = false;
 	boolean gpsFixReceived = false;
@@ -106,24 +108,28 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		tvUpdatedTime = (TextView) findViewById(R.id.tvUpdatedTime);
 		tvLocation = (TextView) findViewById(R.id.tvLocation);
 		tvOLC = (TextView) findViewById(R.id.tvOLC);
+		tvMHL = (TextView) findViewById(R.id.tvMHL);
 		tvMessage = (TextView) findViewById(R.id.tvMessage);
 
 		ImageView shareLocation = (ImageView) findViewById(R.id.shareLocation);
 		ImageView shareDecimal= (ImageView) findViewById(R.id.shareDecimal);
 		ImageView shareDegree= (ImageView) findViewById(R.id.shareDegree);
 		ImageView shareOLC= (ImageView) findViewById(R.id.shareOLC);
+		ImageView shareMHL= (ImageView) findViewById(R.id.shareMHL);
 		ImageView shareMessage= (ImageView) findViewById(R.id.shareMessage);
 
 		shareLocation.setClickable(true);
 		shareDecimal.setClickable(true);
 		shareDegree.setClickable(true);
 		shareOLC.setClickable(true);
+		shareMHL.setClickable(true);
 		shareMessage.setClickable(true);
 
 		shareLocation.setOnClickListener(this);
 		shareDecimal.setOnClickListener(this);
 		shareDegree.setOnClickListener(this);
 		shareOLC.setOnClickListener(this);
+		shareMHL.setOnClickListener(this);
 		shareMessage.setOnClickListener(this);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -303,6 +309,10 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		}
 	}
 
+	private MaidenheadLocator getMHL(double lat, double lon) {
+		return new MaidenheadLocator(lat, lon);
+	}
+
 	public void registerLocationListener() {
 		LocationManager locationManager;
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -330,6 +340,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 			lat = location.getLatitude();
 			lon = location.getLongitude();
 			OLC = getOLC(lat, lon);
+			MHL = getMHL(lat, lon);
 			fix = location.getTime();
 			uncertainity = location.getAccuracy();
 
@@ -347,6 +358,9 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 				tvDegreeCoord.setText(toDegree(lat,lon));
 				if(OLC != null) {
 					tvOLC.setText(OLC.getCode());
+				}
+				if(MHL != null) {
+					tvMHL.setText(MHL.getLOC());
 				}
 
 				final String relative_date = DateUtils.getRelativeTimeSpanString(fix, System.currentTimeMillis(), 0, 0).toString();
