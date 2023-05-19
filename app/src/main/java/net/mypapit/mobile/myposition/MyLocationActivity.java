@@ -58,7 +58,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.annotation.MainThread;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
