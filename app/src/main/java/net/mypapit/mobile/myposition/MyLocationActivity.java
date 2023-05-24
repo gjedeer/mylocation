@@ -443,7 +443,7 @@ public class MyLocationActivity extends Activity implements OnClickListener, Loc
 		Log.d("net.mypapit.mobile.myposition","GPS status changed: " + provider + "," + status);
 	}
 
-	public String toDegree(double lat, double lon)
+	public static String toDegree(double lat, double lon)
 	{
 		StringBuffer stringb = new StringBuffer();
 
